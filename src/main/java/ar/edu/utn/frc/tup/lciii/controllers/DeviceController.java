@@ -34,4 +34,12 @@ public class DeviceController {
         List<DeviceDTO> devices = deviceService.getDevicesByType(type);
         return ResponseEntity.ok(devices);
     }
+
+    @GetMapping
+    public ResponseEntity<List<DeviceDTO>> getDevicesByCpuUsageRange(
+            @RequestParam double lowThreshold,
+            @RequestParam double upThreshold) {
+        List<DeviceDTO> devices = deviceService.getDevicesByCpuUsageRange(lowThreshold, upThreshold);
+        return ResponseEntity.ok(devices);
+    }
 }
