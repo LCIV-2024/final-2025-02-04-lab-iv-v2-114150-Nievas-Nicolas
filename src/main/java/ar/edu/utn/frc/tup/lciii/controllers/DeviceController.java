@@ -16,7 +16,7 @@ import java.util.List;
 public class DeviceController {
     private final DeviceService deviceService;
 
-    @PostMapping("/devices")
+    @PostMapping("/device")
     public ResponseEntity<Void> addDevice(@RequestBody DeviceDTO deviceDTO) {
         deviceService.addDevice(deviceDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -28,14 +28,14 @@ public class DeviceController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/devices")
+    @GetMapping("/device")
     public ResponseEntity<List<DeviceDTO>> getDevicesByType(
             @RequestParam(required = false) DeviceType type) {
         List<DeviceDTO> devices = deviceService.getDevicesByType(type);
         return ResponseEntity.ok(devices);
     }
 
-    @GetMapping
+    @GetMapping("/device")
     public ResponseEntity<List<DeviceDTO>> getDevicesByCpuUsageRange(
             @RequestParam double lowThreshold,
             @RequestParam double upThreshold) {
