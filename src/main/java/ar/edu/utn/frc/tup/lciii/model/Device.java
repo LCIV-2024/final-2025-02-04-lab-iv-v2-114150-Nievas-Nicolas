@@ -1,14 +1,13 @@
 package ar.edu.utn.frc.tup.lciii.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import ar.edu.utn.frc.tup.lciii.enums.DeviceType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 
 @Data
@@ -26,8 +25,17 @@ public class Device {
     @OneToOne(mappedBy = "device")
     private Telemetry telemetry;
 
-//    @Column(name = "TYPE")
-//    @Enumerated(EnumType.STRING)
-//    private DeviceType type;
+    @Column(name = "TYPE")
+    @Enumerated(EnumType.STRING)
+    private DeviceType type;
+
+    @Column(name = "CREATED_DATE", nullable = false)
+    private LocalDateTime createdDate;
+
+    @Column(name = "OS")
+    private String os;
+
+    @Column(name = "MAC_ADDRESS", unique = true)
+    private String macAddress;
 
 }

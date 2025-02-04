@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().toString())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message("An unexpected error occurred")
+                .message(ex.getMessage())
                 .build();
         return new ResponseEntity<>(errorApi, HttpStatus.INTERNAL_SERVER_ERROR);
     }
