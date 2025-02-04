@@ -4,7 +4,9 @@ import ar.edu.utn.frc.tup.lciii.dtos.DeviceDTO;
 import ar.edu.utn.frc.tup.lciii.dtos.ExternalDeviceDTO;
 import ar.edu.utn.frc.tup.lciii.enums.DeviceType;
 import ar.edu.utn.frc.tup.lciii.model.Device;
+import ar.edu.utn.frc.tup.lciii.model.Telemetry;
 import ar.edu.utn.frc.tup.lciii.repository.DeviceRepository;
+import ar.edu.utn.frc.tup.lciii.repository.TelemetryRepository;
 import ar.edu.utn.frc.tup.lciii.service.DeviceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class DeviceServiceImp implements DeviceService {
 
     private final DeviceRepository deviceRepository;
+    private final TelemetryRepository telemetryRepository;
 
     private final RestTemplate restTemplate;
     private static final String EXTERNAL_API_URL = "https://67a106a15bcfff4fabe171b0.mockapi.io/api/v1/device/device";
@@ -86,6 +89,28 @@ public class DeviceServiceImp implements DeviceService {
 
         selectedDevices.forEach(this::saveDevice);
     }
+
+    @Override
+    public List<DeviceDTO> getDevicesByCpuUsageRange(double lowThreshold, double upThreshold) {
+        if (lowThreshold > upThreshold) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "lowThreshold cannot be greater than upThreshold");
+        }
+
+        List<Device> devices = deviceRepository.findAll();
+
+        return devices.stream()
+                .filter(device -> {
+                    List<Telemetry> latestTelemetry = telemetryRepository.findLatestTelemetryByDevice(device.getHostName());
+                    if (!latestTelemetry.isEmpty()) {
+                        double cpuUsage = latestTelemetry.get(0).getCpuUsage();
+                        return cpuUsage >= lowThreshold && cpuUsage <= upThreshold;
+                    }
+                    return false;
+                })
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 
     private DeviceDTO convertToResponseDTO(Device device) {
         return DeviceDTO.builder()

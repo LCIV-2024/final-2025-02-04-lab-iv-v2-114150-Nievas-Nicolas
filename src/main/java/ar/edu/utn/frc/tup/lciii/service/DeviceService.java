@@ -11,4 +11,5 @@ public interface DeviceService {
     void addDevice(DeviceDTO deviceDTO);
     List<DeviceDTO> getDevicesByType(DeviceType type);
     void saveConsumedDevices();
+    List<DeviceDTO> getDevicesByCpuUsageRange(double lowThreshold, double upThreshold);
 }
